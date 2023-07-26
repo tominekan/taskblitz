@@ -61,14 +61,14 @@ async function tokenExistsOnServer(db, token, username) {
 }
 
 
-async function autoLogin(db) {
+export async function autoLogin(db) {
     let username = localStorage.getDeviceId("username")
     let uToken = JSON.parse(localStorage.getItem("userToken"));
     let current_device_id = await getDeviceId()
     // The current device ID matches the stored device ID
     if ((uToken.hasOwnProperty(current_device_id))) {
         if (await tokenExistsOnServer(db, uToken, username)) {
-            let newToken = genBrowserToken(); // Generate new browser token
+            let newToken = await genBrowserToken(); // Generate new browser token
             // Update new browser token in localStorage
             localStorage.setItem("userToken", JSON.stringify(newToken));
 
@@ -90,6 +90,9 @@ async function autoLogin(db) {
 
 
 async function infoLogin(db, username, password) {
-    const currentHash = genHash(password);
-    
+    const currentHash = await genHash(password);
 }
+
+async function getServerHash(db, username) {
+    
+} 

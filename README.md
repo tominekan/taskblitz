@@ -35,4 +35,5 @@ Some quick notes for future reference
 ### Login with username/password
 - The username/password is prompted
 - The password is then hashed and compared to the existing hash on the database, if the username and hash are the same (using the `bcrypt` compare algoritm), then the user is considered "logged in"
-- The new device tokens and username is then saved to localStorage 
+- A new device token is generated and both username and token is then saved to localStorage. 
+- The new device token is also stored on the db.
