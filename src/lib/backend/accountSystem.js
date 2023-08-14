@@ -3,8 +3,8 @@ import { getDeviceId, genHash, genBrowserToken } from "./dataGen.js";
 // Creates new account
 export async function createNewAccount(db, username, name, email, password) {
     // Generate password hash to store on server
-    const hash = await genHash(password)
-    // 
+    const hash = await genHash(password);
+
     const uToken = await genBrowserToken();
     // Generate complete profile + some random starting data
     const userInfo = {
@@ -25,7 +25,7 @@ export async function createNewAccount(db, username, name, email, password) {
     }
 
     const result = await db.insertOne(userInfo);
-    console.log(`New User Created: _id: ${result.insertedId}`);
+    console.log(`New User Created: username: ${result.insertedId}`);
 
     // Update localStorage
     localStorage.setItem("userToken", JSON.stringify(uToken));
@@ -42,8 +42,9 @@ export async function isValidUsername(db, username) {
     return true;
 }
 
-async function getAccountInfo(db, userID) {
-    let accountInfo = await db.findOne({_id: userID});
+// Get account info
+export async function getAccountInfo(db, userID) {
+    let accountInfo = await db.findOne({_id: userID}).lean();
     return accountInfo;
 }
 
@@ -72,8 +73,8 @@ export async function autoLogin(db) {
             // Update new browser token in localStorage
             localStorage.setItem("userToken", JSON.stringify(newToken));
 
-            // Send new browser token to the server
-            db.users.findOne({
+            // Update browser token 
+            db.users.updateOne({
                 username: username,
                 userToken: uToken,
             },

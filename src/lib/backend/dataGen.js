@@ -1,4 +1,4 @@
-import { uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { genSalt, hash } from "bcrypt";
 import { detect } from "detect-browser";
 
