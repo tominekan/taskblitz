@@ -10,7 +10,7 @@ const config = {
     adapter: adapter(),
     alias: {
       $db: "./src/lib/db",
-      $backend: "./src/backend"
+      $backend: "./src/lib/backend"
     },
   },
 

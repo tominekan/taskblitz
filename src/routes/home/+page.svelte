@@ -8,32 +8,52 @@
         Modal,
         Label,
         Input,
-        P,
     } from "flowbite-svelte";
+
+    import { browser } from "$app/environment";
+
+    // IMPORTANT TO MOUNT, IDK Y NGL
+    import { onMount } from 'svelte';
+
+	onMount(() => {
+		mounted = true;
+	});
+	let mounted = false;
 
     import logo_full from "$lib/assets/logo_full.svg";
     import hero_image from "$lib/assets/hero_image.png";
-    import daily_planning from "$lib/asset/daily_planning_feature.png";
+    import daily_planning from "$lib/assets/daily_planning_feature.png";
     import metrics_image from "$lib/assets/metrics_image.png";
     import custom_list from "$lib/assets/custom_list.png";
-
-    /** @type {import('./$types').PageData} */
-    export let data;
-    console.log(data.persons);
+    import success_icon from "$lib/assets/ICONS/success_check_icon.svg";
 
 
+    /** @type {import('./$types').ActionData} */
+    export let form;
 
 
     let loginModal = false;
     let signupModal = false;
+    let successModal = true;
 
 
     let signupUsername = "";
     let signupEmail = "";
     let signupPassword = "";
     let signupFullName = "";
-</script>
 
+    function saveFormData() {
+        localStorage.setItem("fullName", form?.user.fullName);
+        localStorage.setItem("deviceToken", form?.user.deviceToken);
+        localStorage.setItem("username", form?.user.username);
+    }
+
+    $: if (form?.success === true && browser) {
+        saveFormData();
+    }
+
+</script>
+{#if mounted}
 <title>Taskblitz Home</title>
 
 <!-- NAVBAR -->
@@ -46,7 +66,7 @@
         />
     </NavBrand>
     <NavHamburger on:click={toggle} />
-    <NavUl {hidden} class="md:bg-none">
+    <NavUl {hidden} class="lg:bg-none">
         <Button size="sm" color="none" on:click={() => loginModal = true}>Log In</Button>
         <Button size="sm" on:click={() => signupModal = true}>Sign Up</Button>
     </NavUl>
@@ -54,7 +74,7 @@
 
 <!-- SIGNUP MODAL -->
 <Modal bind:open={signupModal} size="xs" autoclose={false} class="w-full rounded-2xl">
-    <form class="flex flex-col space-y-6" action="#">
+    <form class="flex flex-col space-y-6" method="POST" action="?/signup">
       <h3 class="mb-1 text-xl font-bold text-gray-900 dark:text-white">Create Account</h3>
       <Label class="space-y-2">
         <span>Name</span>
@@ -66,7 +86,7 @@
       </Label>
       <Label class="space-y-2">
         <span>Email</span>
-        <Input type="email" name="email" placeholder="name@youremail.com" required bind:value={signupEmail}/>
+        <Input type="email" name="useremail" placeholder="name@youremail.com" required bind:value={signupEmail}/>
       </Label>
       <Label class="space-y-2">
         <span>Your password</span>
@@ -156,3 +176,17 @@
     </div>
 
 </div>
+
+{#if form?.success}
+  <Modal bind:open={successModal} size="xs" autoclose>
+    <div class="text-center flex flex-col items-center">
+        <!-- THIS IS THE SUCCESS CHECK ICON -->
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" class="w-12 h-12 fill-gray-500 dark:text-white mb-4">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 10 2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+        </svg>
+      <h3 class="mb-5 text-lg font-sm text-gray-500 dark:text-gray-400">Sign in successful! Welcome {form?.user.fullName}</h3>
+      <Button class="mr-2 w-24" href="/" >Continue</Button>
+    </div>
+  </Modal>
+{/if} 
+{/if}

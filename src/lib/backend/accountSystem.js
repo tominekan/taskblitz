@@ -1,38 +1,44 @@
-import { getDeviceId, genHash, genBrowserToken } from "./dataGen.js";
+import {genHash, genBrowserToken } from "./dataGen.js";
 
 // Creates new account
+// MAYBE USE A SINGLE DICTIONARY INSTEAD OF AL THESE ARGUMENTS
 export async function createNewAccount(db, username, name, email, password) {
     // Generate password hash to store on server
     const hash = await genHash(password);
 
-    const uToken = await genBrowserToken();
+    const uToken = genBrowserToken();
     // Generate complete profile + some random starting data
+
+    const firstTask = {
+        title: "This is your first task",
+        description: "You can edit all aspects of the task, ranging from the due date to the tags",
+        startTime: "11:30 AM",
+        endTime: "12:30 PM",
+        date: "Today"
+    }
+
     const userInfo = {
         fullName: name,
         email: email,
         hash: hash,
         userToken: [uToken, ],
         username: username,
-        allTasks: [
-            {
-                title: "This is your first task",
-                description: "You can edit all aspects of the task, ranging from the due date to the tags",
-                startTime: "11:30 AM",
-                endTime: "12:30 PM",
-                date: "Today"
-            }
-        ]
+        allTasks: [firstTask, ]
     }
 
     const result = await db.insertOne(userInfo);
     console.log(`New User Created: username: ${result.insertedId}`);
 
-    // Update localStorage
-    localStorage.setItem("userToken", JSON.stringify(uToken));
-    localStorage.setItem("username", name);
-    return result.insertedId;
+    let results = {
+        fullName: name,
+        deviceToken: uToken,
+        username: username,
+        allTasks: [firstTask, ]
+    }
+    return results;
 }
 
+/*
 // Checks if the username is unique 
 export async function isValidUsername(db, username) {
     let otherUserNameExists = await db.find({username: username});
@@ -97,3 +103,5 @@ async function infoLogin(db, username, password) {
 async function getServerHash(db, username) {
     
 } 
+
+*/

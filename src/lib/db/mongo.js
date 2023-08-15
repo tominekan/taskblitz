@@ -8,5 +8,4 @@ export function startMongo() {
     return client.connect();
 }
 
-
 export default client.db("taskblitzDB").collection("users");

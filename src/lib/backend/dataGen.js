@@ -6,7 +6,7 @@ const SALT_ROUNDS = 10;
 
 
 
-// Generates a hash from the password given
+// Generates a hash from the password given is asynchronous
 export async function genHash(password) {
     let newHash = await genSalt(SALT_ROUNDS)
         .then(salt => {return hash(password, salt)})
@@ -15,19 +15,7 @@ export async function genHash(password) {
 }
 
 // Generates unique token for each user
-export async function genBrowserToken() {
-    const DEVICE_ID = await getDeviceId();
+export function genBrowserToken() {
     const browserToken = uuidv4();
-
-    return {
-        device: DEVICE_ID,
-        token: browserToken,
-    };  
-}
-
-export async function getDeviceId() {
-    const BROWSER_INFO = detect();
-    const DEVICE_ID = `${BROWSER_INFO.os}.${BROWSER_INFO.name}.${BROWSER_INFO.version}`;
-
-    return DEVICE_ID;
+    return browserToken;
 }

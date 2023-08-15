@@ -7,6 +7,8 @@
         ToolbarButton,
         ToolbarGroup,
         } from 'flowbite-svelte';
+
+        import { browser } from "$app/envionment"
 </script>
 
 
